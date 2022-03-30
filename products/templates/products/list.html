@@ -1,0 +1,24 @@
+{%  extends 'prodotti_list_base.html' %}
+{%  block list_title  %} Prodotti {% endblock %}
+{% block content_title %}Prodotti content{% endblock %}
+
+
+{%  block thead  %}
+    <th>Owner</th>
+    <th>name</th>
+    <th>price</th>
+    <th>Actions</th>
+{% endblock %}
+
+{% block tbody %}
+    {%  for products in object_list %}
+        <tr>
+            <td>{{ products.owner }}</td>
+            <td>{{ products.name }}</td>
+            <td>{{ products.price }}</td>
+            <td><a href="{% url 'prod:products-detail' products.pk  %}">detail</a>
+                <br>
+            </td>
+        </tr>
+    {%  endfor %}
+{%  endblock %}

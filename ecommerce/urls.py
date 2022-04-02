@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-from ecommerce.views import Maintenance, maintenance, NotFound, Homepage
+from ecommerce.views import Maintenance, maintenance, NotFound, Homepage, UserCreationView
 
 urlpatterns = [
     path('', Homepage.as_view(), name='homepage'),
@@ -24,5 +24,6 @@ urlpatterns = [
     path('maintenance/<int:cheneso>',maintenance,name='maintenance'),
     path('404-not-found', NotFound.as_view(), name='404-not-found'),
     path('admin/', admin.site.urls),
-    path('products/', include('products.urls'))
+    path('products/', include('products.urls')),
+    path('register/', UserCreationView.as_view(), name='user-create')
 ]

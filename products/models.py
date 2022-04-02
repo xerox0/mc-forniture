@@ -11,7 +11,8 @@ class Prodotti(models.Model):
     owner = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     description = models.TextField()
-    price = models.TextField()
+    price = models.CharField(max_length=255)
+    review = models.TextField(default='Hello')
 
     #c'è la possibilità di andare a sovrascrivere alcune funzioni in base.py
     def __str__(self):

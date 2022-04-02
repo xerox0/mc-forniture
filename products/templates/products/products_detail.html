@@ -1,10 +1,14 @@
 
 {% extends 'base.html' %}
 
-{% block title %}Products Detail: {{ object.name }}{% endblock %}
+{% block title %}Dettagli di {{ object.name }}{% endblock %}
 
 {% block content %}
-    <h1>{{object.owner}}</h1>
-    <h3>{{ object.name }}</h3>
-    <p>{{ object.description }}</p>
+    <form method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <h1>{{ object.owner }}</h1>
+        <h3>{{ object.name }}</h3>
+        <p>{{ object.price }}</p>
+        <p1>{{ object.review }}</p1>
+    </form>
 {% endblock %}

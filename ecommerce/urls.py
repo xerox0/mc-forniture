@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from . import views
-from ecommerce.views import Maintenance, maintenance, NotFound, Homepage, UserCreationView
+from django.contrib.auth import views as auth_views
+from ecommerce.views import Maintenance, maintenance, NotFound, Homepage
 
 urlpatterns = [
     path('', Homepage.as_view(), name='homepage'),
@@ -25,5 +25,8 @@ urlpatterns = [
     path('404-not-found', NotFound.as_view(), name='404-not-found'),
     path('admin/', admin.site.urls),
     path('products/', include('products.urls')),
-    path('register/', UserCreationView.as_view(), name='user-create')
+    path('account/', include('django.contrib.auth.urls')),
+    path('login/',auth_views.LoginView.as_view(),name='login'),
+    path('logout/',auth_views.LogoutView.as_view(),name='logout'),
+    path('user_manage/', include('user_manage.urls')),
 ]

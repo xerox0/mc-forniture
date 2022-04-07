@@ -7,30 +7,35 @@
     <th>Owner</th>
     <th>name</th>
     <th>price</th>
+    <th>image</th>
     <th>Actions</th>
 {% endblock %}
 
 {% block tbody %}
-    {%  for products in object_list %}
-        <tr>
-            <td>{{ products.owner }}</td>
-            <td>{{ products.name }}</td>
-            <td>{{ products.price }}</td>
-            <td>
-                <a href="{% url 'prod:products-detail' products.pk  %}"
-                   class="btn btn-primary">detail</a>
-                <a href="{% url 'prod:products-update' products.pk %}"
-                   class="btn btn-primary">update</a>
-                <a href="{% url 'prod:products-delete' products.pk %}"
-                   class="btn btn-primary">delete</a>
-            </td>
-        </tr>
-    {%  endfor %}
+{%  for products in object_list %}
+<tr>
+    <td>{{ products.owner }}</td>
+    <td>{{ products.name }}</td>
+    <td>{{ products.price }}</td>
+    <td><a ><img src="img//{{products.image}}"></a></td>
+    <td>
+        <a href="{% url 'prod:products-detail' products.pk  %}"
+           class="btn btn-primary">detail</a>
+        {%  if user.is_authenticated and user.is_owner and products.owner == user.proprietario %}
+            <a href="{% url 'prod:products-update' products.pk %}"
+                 class="btn btn-primary">update</a>
+            <a href="{% url 'prod:products-delete' products.pk %}"
+                 class="btn btn-primary">delete</a>
+        {% endif %}
+    </td>
+</tr>
+{%  endfor %}
 {%  endblock %}
 
 {%  block table_after %} <!-- qui aggiungo dei bottoni con link alle vare funzioni disponibili al sito-->
-    <a href="{%  url 'prod:products-create' %} "
-       class="btn btn-primary">New products</a>
-
+    {% if user.is_authenticated and user.is_owner %}
+        <a href="{%  url 'prod:products-create' %} "
+           class="btn btn-primary">New products</a>
+    {% endif %}
 
 {%  endblock %}

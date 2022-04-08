@@ -2,7 +2,7 @@ from crispy_forms.layout import Submit
 from django import forms
 from django.forms import IntegerField, CharField
 
-from products.models import Prodotti
+from products.models import Prodotti, Categoria
 from crispy_forms.helper import FormHelper
 
 class ProdottiForm(forms.ModelForm):
@@ -18,7 +18,9 @@ class ProdottiForm(forms.ModelForm):
         #Nelle sllide abbiamo visto mettere le tuple mentre poi a lezione usiamo le liste
         #La situazione è la stessa  e non cambia nulla. Si usa la tupla per evitare i
         # duplicati dello stesso campo
-        fields = ['owner', 'name', 'description', 'price', 'image']
+        fields = ['owner','categoria' ,'name', 'dimensione','tipo_materiale', 'price', 'image']
+
+
 
 class SearchForm(forms.Form):
     nome = CharField(max_length=255)

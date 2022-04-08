@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.contrib import messages
@@ -8,9 +9,23 @@ from user_manage.decorator import owner_required
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
-from products.models import Prodotti
+from products.models import Prodotti, Categoria
 from products.forms import ProdottiForm, SearchForm
 
+
+def CategoriaView(request):
+    category = request.GET.get('category')
+
+    products = Prodotti.objects.filter(categoria__nome=category)
+
+    categories = Categoria.objects.all()
+
+    context = {
+        'products': products,
+        'categories': categories
+    }
+
+    return render(request, 'products/categoria.html', context)
 
 class ProdottiList(ListView):
     model = Prodotti
@@ -25,15 +40,15 @@ class ProdottiCreate(LoginRequiredMixin,CreateView):
     model = Prodotti
     template_name = 'products/create.html'
     #fields = ['owne','name', 'description', 'price']
-    success_url = reverse_lazy('prod:products-list')
+    success_url = reverse_lazy('homepage')
     form_class = ProdottiForm
 
-@method_decorator(property,name='dispatch')
+
 @method_decorator([login_required, owner_required], name='dispatch')
 class ProdottiDelete(LoginRequiredMixin,DeleteView):
     model= Prodotti
     template_name = 'products/delete.html'
-    success_url = reverse_lazy('prod:products-list')
+    success_url = reverse_lazy('homepage')
 
 
 @method_decorator([login_required, owner_required], name='dispatch')
@@ -41,7 +56,7 @@ class ProdottiUpdate(LoginRequiredMixin,UpdateView):
     model = Prodotti
     template_name = 'products/update.html'
     #fields = ['owne','name','description','price']
-    success_url = reverse_lazy('prod:products-list')
+    success_url = reverse_lazy('prod:products-category')
     form_class = ProdottiForm
 
 
@@ -49,6 +64,10 @@ class ProdottiUpdate(LoginRequiredMixin,UpdateView):
         frm = form.save(commit=False)
 
         return super().form_valid(form)
+class ReviewCreateView(LoginRequiredMixin,CreateView):
+    model = Prodotti
+
+
 # class SearchProd(ListView):
 #
 #     model = Prodotti

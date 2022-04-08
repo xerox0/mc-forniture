@@ -4,12 +4,28 @@
 {% block title %}Dettagli di {{ object.name }}{% endblock %}
 
 {% block content %}
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <h1>{{ object.owner }}</h1>
-        <h3>{{ object.name }}</h3>
-        <p>{{ object.price }}</p>
-        <p1>{{ object.review }}</p1>
-        <p2><a><img src="{{ object.image }}"></a></p2>
-    </form>
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <a href="{% url 'prod:products-category' %}" class="btn btn-primary mt-2">Back</a>
+                <div class="card m-5 p-2" style="width: 25rem;">
+                    <img src="{{ object.image.url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title m-1"><b>Name:</b> {{ object.name }}</h5>
+                        <h4 class="card-subtitle m-1"><b>Price:</b> {{object.price }}</h4>
+                        <p style="font-size: 14px;" class="btn btn-warning m-1 p-1">{{ object.category.nome }}</p>
+                        <hr>
+                        <p style="font-size: 15px;" class="card-text mt-1">Dimensione: {{ object.dimensione }} cm</p>
+                        <p style="font-size: 13px;" class="cart-text mt-1">Materiale : {{ object.tipo_materiale }}</p>
+                        {%  if user.is_authenticated and user.is_owner and object.owner == user.proprietario %}
+                            <a href="{% url 'prod:products-delete' object.pk %}" class="btn btn-danger m-1"> Delete </a>
+                            <a href="{% url 'prod:products-update' object.pk %}" class="btn btn-primary m-1"> Update </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

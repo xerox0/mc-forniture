@@ -6,6 +6,7 @@
 {%  block thead  %}
     <th>Owner</th>
     <th>name</th>
+    <th>Categoria</th>
     <th>price</th>
     <th>image</th>
     <th>Actions</th>
@@ -16,8 +17,9 @@
 <tr>
     <td>{{ products.owner }}</td>
     <td>{{ products.name }}</td>
+    <td>{{ products.categoria }}</td>
     <td>{{ products.price }}</td>
-    <td><a ><img src="img//{{products.image}}"></a></td>
+    <td><img src="{{products.image.url}}" class="img-fluid"></td>
     <td>
         <a href="{% url 'prod:products-detail' products.pk  %}"
            class="btn btn-primary">detail</a>

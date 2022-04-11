@@ -37,13 +37,16 @@
                         {% if user.is_authenticated and user.is_owner %}
                             <a class="dropdown-item" href="{%  url 'prod:products-create' %} ">New products</a>
                         {% endif %}
-                        <a class="dropdown-item" href="#">Another action</a>
+                        <a class="dropdown-item" href="{% url "prod:search" %}">Search</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#">Something else here</a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled"></a>
+                    <form action="{% url 'prod:search' %}" method="get" class="d-flex">
+                    <input class="form-control me-2" type="text" name="query" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
                 </li>
             </ul>
 

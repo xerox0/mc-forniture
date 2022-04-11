@@ -2,6 +2,7 @@ import datetime
 import os
 import random
 
+
 from django.db import models
 from user_manage.models import User,Owner,Cliente
 # Create your models here.
@@ -33,28 +34,35 @@ class Categoria(models.Model):
 
 
 class Prodotti(models.Model):
-
-    #definisco attributi che poi diventeranno colonne della mia tabella
-    #grazie al concetto delle migration posso fare delle migrazioni e applicarle al mio db
-    #La chiave di default la mette Django con un ID incrementale
-
-    owner = models.ForeignKey(Owner, related_name='prodotti', on_delete=models.PROTECT)# proteggo gli al tri post dello stesso fornitore , mentre in Fornitore ho messo il CAscade perchè se cancelllo l'autore deve perdersi ogni suo prodotto
+    owner = models.ForeignKey(Owner, related_name='prodotti', on_delete=models.PROTECT)
     categoria = models.ForeignKey(Categoria,on_delete=models.CASCADE)
     #la related name la uso qui per fare subito delle operazioni sul DB
-
-    name = models.CharField(max_length=255)
-
+    name = models.CharField(max_length=255,)
     dimensione = models.CharField(max_length=255, default=None)
     tipo_materiale = models.CharField(max_length=255,default=None)
     price = models.CharField(max_length=255)
     review = models.TextField(default='Hello')
     image = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
 
-
     #c'è la possibilità di andare a sovrascrivere alcune funzioni in base.py
     def __str__(self):
-        return f'{self.owner} - id: {self.id}'
+        return f'{self.name}'
 
+class IntegerRangeField(models.IntegerField):
+    def __init__(self, verbose_name=None, name=None, min_value=None, max_value=None, **kwargs):
+        self.min_value, self.max_value = min_value, max_value
+        models.IntegerField.__init__(self, verbose_name, name, **kwargs)
+    def formfield(self, **kwargs):
+        defaults = {'min_value': self.min_value, 'max_value':self.max_value}
+        defaults.update(kwargs)
+        return super(IntegerRangeField, self).formfield(**defaults)
 
-
+class Review(models.Model):
+    prodotto = models.ForeignKey(Prodotti,related_name="recensioni", on_delete=models.CASCADE)
+    comment_name = models.CharField(max_length=200)
+    comment_body = models.TextField()
+    rating_fornitore = IntegerRangeField(min_value=1, max_value=5)
+    rating_prodotto = IntegerRangeField(min_value=1, max_value=5)
+    def __str__(self):
+        return f'{self.comment_name}'
 

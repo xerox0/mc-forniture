@@ -22,10 +22,26 @@
                             <a href="{% url 'prod:products-delete' object.pk %}" class="btn btn-danger m-1"> Delete </a>
                             <a href="{% url 'prod:products-update' object.pk %}" class="btn btn-primary m-1"> Update </a>
                         {% endif %}
+                        {%  if user.is_authenticated and user.is_client %}
+                            <a href="{% url 'prod:products-review' object.pk %}"  class="btn btn-danger m-1"> Recensisci </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div style="margin: 5px; padding:2px">
+                    <h4>RECENSIONI</h4>
+                    {% if  user.is_authenticated %}
+                        {% for recensione in  object.recensioni.all %}
+                            <h5><strong>Titolo :{{ recensione.comment_name }}</strong></h5>
+                            <p>Contenuto : {{ recensione.comment_body}}</p>
+                            <p1>Voto fornitore: {{ recensione.rating_fornitore }}</p1>
+                            <p2>Voto prodotto :{{ recensione.rating_prodotto }}</p2>
+                        {%  endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
         </div>
     </div>
-
 {% endblock %}

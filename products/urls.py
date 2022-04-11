@@ -3,7 +3,7 @@ from django.urls import path
 
 from products import views
 
-from .views import ProdottiList, ProdottiDetail, ProdottiCreate, ProdottiDelete,ProdottiUpdate
+from .views import SearchView,ProdottiList, ProdottiDetail, ProdottiCreate, ProdottiDelete, ProdottiUpdate, ReviewCreateView
 
 app_name = 'prod'
 
@@ -13,5 +13,8 @@ urlpatterns = [
     path('products/create',ProdottiCreate.as_view(), name='products-create'),
     path('products/<int:pk>/delete',ProdottiDelete.as_view(),name = 'products-delete'),
     path('products/<int:pk>/update',ProdottiUpdate.as_view(),name = 'products-update'),
-    path('categoria/',views.CategoriaView,name = 'products-category')
+    path('categoria/',views.CategoriaView,name = 'products-category'),
+    path('product/<int:pk>/recensioni', ReviewCreateView.as_view(), name='products-review'),
+    path('',SearchView.as_view() , name='search'),
+
 ]

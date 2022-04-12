@@ -112,16 +112,16 @@ class SearchView(ListView):
             min_price = self.request.GET.get('min_price')
             max_price = self.request.GET.get('max_price')
             if nome and material:
-                        if min_price:
-                             if max_price:
-                                        qs = self.model.objects.filter(name__icontains=nome,tipo_materiale__icontains=material,price__gte=min_price,price__lte=max_price).order_by('-price')
-                             else:
-                                    qs = self.model.objects.filter(name__icontains=nome,tipo_materiale__icontains=material ,price__gte=min_price).order_by('-price')
-                        else:
-                                 if max_price:
-                                             qs = self.model.objects.filter(name__icontains=nome,tipo_materiale__icontains=material).order_by('-price')
+                                if min_price:
+                                                if max_price:
+                                                            qs = self.model.objects.filter(name__icontains=nome,tipo_materiale__icontains=material,price__gte=min_price,price__lte=max_price).order_by('-price')
+                                                else:
+                                                            qs = self.model.objects.filter(name__icontains=nome,tipo_materiale__icontains=material ,price__gte=min_price).order_by('-price')
+                                else:
+                                                             qs = self.model.objects.filter(name__icontains=nome,tipo_materiale__icontains=material).order_by('-price')
+
             else:
-                 qs= self.model.objects.none()
+                        qs= self.model.objects.all()
             return qs
 
     def get_context_data(self, *, object_list=None, **kwargs):

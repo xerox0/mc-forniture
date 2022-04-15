@@ -24,7 +24,7 @@ Installa: 'pip install --upgrade django-crispy-forms'
 - Python 3.9
 - [Django Web Framework](https://www.djangoproject.com/)
 - [Django Crispy Forms](https://github.com/django-crispy-forms/django-crispy-forms)
-- [Bootstrap Framework v4.6](https://getbootstrap.com/docs/4.6/getting-started/introduction/)
+- [Bootstrap Framework v4.6](https://getbootstrap.com/docs/4.6/getting-started/introduction/)  <br>
 
 
 ##4. Utenti di prova  

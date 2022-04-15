@@ -13,9 +13,8 @@ Installa: 'pip install --upgrade django-crispy-forms'
 
 
 ## 2. Start the **development** server
-## 2. Start the **development** server
 
-Two execution options are supported:
+
 - Run server on localhost: `python3 manage.py runserver`<br>
   Ora puoi accedere a  http://127.0.0.1:8000 <br>
 - Se tutto è andato a buonfine avrai il sito CM-Forniture davanti 

@@ -33,4 +33,9 @@ username: cliente1
 passwd: prova1234  
 `Login da fornitore:`  
 username: fornitore1  
-passwd: prova1234
+passwd: prova1234  
+  
+## 5. Documenti  
+Nella cartella documenti sono presenti  
+il file presentazione e il file richiesta approvazione traccia,  
+in più è presente anche una cartella con tutti gli screen del sito.

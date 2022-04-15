@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 
 # Create your views here.
 from django.urls import reverse_lazy
@@ -10,7 +10,7 @@ from django.views.generic import CreateView, ListView, DetailView
 from forum.forms import ForumForm, RispostaForm
 from forum.models import Forum, Risposta
 from user_manage.decorator import  client_required
-from user_manage.models import Cliente
+from user_manage.models import Cliente, User, Owner
 
 
 class ThreadList(ListView):
@@ -19,13 +19,15 @@ class ThreadList(ListView):
     context_object_name = 'lista_thread'
 
 
-
-class RispostaList(ListView):
+class RispostaList(DetailView):
     model = Risposta
-    template_name = 'forum/discussione.html'
-    context_object_name = 'lista_commenti'
+    template_name = "forum/discussione.html"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Forum, pk=self.kwargs.get('pk'))
 
 
+@method_decorator([login_required,client_required],name='dispatch')
 class ThreadCreate(LoginRequiredMixin,CreateView):
     model = Forum
     form_class = ForumForm
@@ -35,13 +37,22 @@ class ThreadCreate(LoginRequiredMixin,CreateView):
         form.instance.user = Cliente.objects.get(user__username=self.request.user.username)
         return super(ThreadCreate,self).form_valid(form)
 
-@method_decorator([login_required, client_required], name='dispatch')
-class RispostaCreate(CreateView):
-    model = Risposta
-    form_class = RispostaForm
-    template_name = 'forum/crea_risposta.html'
-    success_url = reverse_lazy('forum:thread-list')
-    def form_valid(self, form):
-        form.instance.user = Cliente.objects.get(user__username=self.request.user.username)
-        return super(RispostaCreate,self).form_valid(form)
+@login_required()
+def add_comment(request, pk):
+    if request.user.is_client ==True:
+                user = Cliente.objects.get(user__username=request.user.username)
+    elif request.user.is_owner ==True:
+                user= Owner.objects.get(user__username=request.user.username)
+    object =Forum.objects.get(id=pk)
+    if request.method == "POST":
+        form = RispostaForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = user
+            comment.titolo = object
+            comment.save()
+            return redirect('forum:discussione', pk=object.pk)
+    else:
+        form = RispostaForm()
+    return render(request, 'forum/crea_risposta.html', {'form': form})
 

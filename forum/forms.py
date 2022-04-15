@@ -17,7 +17,7 @@ class ForumForm(forms.ModelForm):
     class Meta:
         model = Forum
 
-        fields = ['titolo','descrizione','contenuto']
+        fields = ['fornitore','titolo','descrizione','contenuto']
 
 class RispostaForm(forms.ModelForm):
 

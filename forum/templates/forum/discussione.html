@@ -2,28 +2,30 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <h1> {{ }} </h1>
-    <h2>{{  t.user}}</h2>
-    <br>
-    <p>{{ t.contenuto}}</p>
 
-        <table class="table table-hover">
-            <thead>
+        <h1> {{ object.titolo}} </h1>
+        <h2>{{  object.user}}</h2>
+        <br>
+        <p>{{ object.contenuto}}</p>
+
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Utente</th>
+            <th>Commento</th>
+
+        </tr>
+        </thead>
+         {% for s in object.risposta.all %}
             <tr>
-                <th>Utente</th>
-                <th>Commento</th>
-
+                <td>{{ s.user }}</td>
+                <td>{{ s.commento }}</td>
             </tr>
-            </thead>
-            {% for s in lista_commenti %}
-                <tr>
-                    <td>{{ s.user }}</td>
-                    <td>{{ s.commento }}</td>
-                </tr>
-            {% endfor %}
-            {%  if user.is_authenticated %}
-                <a href="{%  url 'forum:crea-commento'%}" class="btn btn-primary">Nuovo commento </a>
-            {% endif %}
-        </table>
+        {% endfor %}
+        {%  if user.is_authenticated %}
+            <a href="{%  url 'forum:crea-commento' pk=object.pk%}" class="btn btn-primary">Nuovo commento </a>
+        {% endif %}
+
+    </table>
     </form>
 {% endblock %}

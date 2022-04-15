@@ -27,7 +27,7 @@ Installa: 'pip install --upgrade django-crispy-forms'
 - [Bootstrap Framework v4.6](https://getbootstrap.com/docs/4.6/getting-started/introduction/)  <br>
 
 
-##4. Utenti di prova  
+## 4. Utenti di prova  
 `Login da cliente:`  
 username: cliente1  
 passwd: prova1234  

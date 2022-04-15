@@ -24,5 +24,5 @@ class Homepage(TemplateView):
 
 class UserCreationView(CreateView):
     form_class = UserCreationForm  #creata un anuova view per la creazione utente
-    template_name = '../user_manage/templates/user_manage/registration/user_creation.html'  #creo il template che non sarà diverso dal templateform vecchi
+    template_name = '../user_manage/templates/user_manage/registration/user_creation.html'  #creo il templates che non sarà diverso dal templateform vecchi
     success_url =  reverse_lazy('homepage')

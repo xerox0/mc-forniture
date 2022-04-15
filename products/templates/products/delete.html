@@ -9,7 +9,7 @@
     <p>{{ object.description }}</p>
     <form method="post">{%  csrf_token %}
         {{ form.as_p }}
-        <a href="{% url 'prod:products-delete' object.pk %}">annulla</a>
+        <a href="{% url 'prod:products-detail' object.pk %}">annulla</a>
         <input type="submit" value="Confirm">
     </form>
 {% endblock %}

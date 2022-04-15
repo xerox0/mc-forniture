@@ -1,7 +1,7 @@
 import datetime
 import os
 import random
-
+from time import timezone
 
 from django.db import models
 from user_manage.models import User,Owner,Cliente
@@ -57,12 +57,28 @@ class IntegerRangeField(models.IntegerField):
         defaults.update(kwargs)
         return super(IntegerRangeField, self).formfield(**defaults)
 
+RATING=(
+    (1,'1'),
+    (2,'2'),
+    (3,'3'),
+    (4,'4'),
+    (5,'5'),
+)
 class Review(models.Model):
     prodotto = models.ForeignKey(Prodotti,related_name="recensioni", on_delete=models.CASCADE)
+    user = models.ForeignKey(Cliente,on_delete=models.CASCADE)
     comment_name = models.CharField(max_length=200)
     comment_body = models.TextField()
-    rating_fornitore = IntegerRangeField(min_value=1, max_value=5)
-    rating_prodotto = IntegerRangeField(min_value=1, max_value=5)
+    rating_fornitore = models.IntegerField(choices=RATING,default=1)
+    rating_prodotto = models.IntegerField(choices=RATING,default=1)
     def __str__(self):
         return f'{self.comment_name}'
 
+class Report(models.Model):
+    author = models.CharField(max_length=200)
+    text = models.TextField()
+
+
+
+    def __str__(self):
+        return self.text

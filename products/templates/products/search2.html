@@ -7,10 +7,10 @@
     <br>
     <form method='GET'>
         <p>
-            {{ form.nome }}
-            {{ form.material }}
-            {{ form.min_price }}
-            {{ form.max_price }}
+            {{ form.nome }}nome
+            {{ form.material }}materiale
+            {{ form.min_price }}Prezzo min
+            {{ form.max_price }}Prezzo max
             <input class="button" type='submit' value="Search">
         </p>
         <br>
@@ -29,7 +29,7 @@
             </thead>
             {% for s in search_list %}
                 <tr>
-                    <td> <img src="{{ object.image.url }}" class="card-img-top" alt="..."></td>
+                    <td> <img src="{{ s.image.url }}" style="height: 100px; width: 100px"; class="card-img-top" alt="..."></td>
                     <td>{{ s.name }}</td>
                     <td>{{ s.owner }}</td>
                     <td>{{ s.categoria }}</td>

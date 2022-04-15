@@ -1,17 +1,24 @@
+from random import random
+
+import comments as comments
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
 
-from django.shortcuts import render, redirect
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.contrib import messages
-from user_manage.decorator import owner_required
+from user_manage.decorator import owner_required,client_required
+from user_manage.views import OwnerSignUpView
 # Create your views here.
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, CreateView, DeleteView, UpdateView
 from django.views.generic.list import ListView
 from products.models import Prodotti, Categoria, Review
-from products.forms import ProdottiForm, ReviewForm, SearchForm
+from products.forms import ProdottiForm, ReviewForm, SearchForm, ReportForm, Lista_fornitoreForm, Lista_RevForm
+from user_manage.models import Owner, Cliente
+from django.conf import settings
 
 def CategoriaView(request):
     category = request.GET.get('category')
@@ -31,9 +38,18 @@ class ProdottiList(ListView):
     model = Prodotti
     template_name = 'products/list.html'
 
-class ProdottiDetail(DetailView):
-    model = Prodotti
-    template_name = 'products/products_detail.html'
+
+# class ProdottiDetail(DetailView):
+#     model = Prodotti
+#     template_name = 'products/products_detail.html'
+def product_related(request, pk):
+        product = Prodotti.objects.get(id=pk)
+        related_products = Prodotti.objects.filter(categoria=product.categoria).exclude(id=product.id)
+        print(related_products)
+        if len(related_products) >= 3:
+            related_products = random.sample(related_products, 3)
+
+        return render(request, 'products/products_detail.html',{'product':product,'related':related_products})
 
 @method_decorator([login_required, owner_required], name='dispatch')
 class ProdottiCreate(LoginRequiredMixin,CreateView):
@@ -43,6 +59,10 @@ class ProdottiCreate(LoginRequiredMixin,CreateView):
     success_url = reverse_lazy('homepage')
     form_class = ProdottiForm
 
+    def form_valid(self, form):
+
+        form.instance.owner = Owner.objects.get(user_id=self.request.user.id)
+        return super(ProdottiCreate,self).form_valid(form)
 
 @method_decorator([login_required, owner_required], name='dispatch')
 class ProdottiDelete(LoginRequiredMixin,DeleteView):
@@ -60,43 +80,49 @@ class ProdottiUpdate(LoginRequiredMixin,UpdateView):
     form_class = ProdottiForm
 
 
-    def form_valid(self, form):
-        frm = form.save(commit=False)
+@method_decorator([login_required,client_required],name='dispatch')
+class RevDelete(LoginRequiredMixin,DeleteView):
+    model= Review
+    template_name = 'products/delete_review.html'
+    success_url = reverse_lazy('homepage')
 
-        return super().form_valid(form)
 
-class ReviewCreateView(LoginRequiredMixin,CreateView):
-    model = Review
-    template_name = 'products/recensioni.html'
-    success_url = reverse_lazy('prod:products-category')
-    form_class = ReviewForm
 
-    def add_comment(request, pk):
-        eachProduct = Prodotti.objects.get(id=pk)
+@login_required()
+def add_review(request, pk):
+        object = Prodotti.objects.get(id=pk)
+        if request.method == "POST":
 
-        form = ReviewForm(instance=eachProduct)
-
-        if request.method == 'POST':
-            form = ReviewForm(request.POST, instance=eachProduct)
+            form = ReviewForm(request.POST)
             if form.is_valid():
-                name = request.user.username
-                body = form.cleaned_data['comment_body']
-                rate_forn = form.full_clean['rating_fornitore']
-                rate_prod = form.full_clean['rating_prodotto']
-                c = Review(prodotto=eachProduct, comment_name=name, comment_body=body,rating_fornitore=rate_forn,rating_prodotto=rate_prod)
-                c.save()
-                messages.success(request, 'Thank you! Your review has been submitted.')
-                return redirect('prod:products-category')
-            else:
-                print('form is invalid')
+                comment = form.save(commit=False)
+                comment.user = Cliente.objects.get(user__username=request.user.username)
+                comment.prodotto  = object
+                comment.save()
+                return redirect('prod:products-detail', pk=object.pk)
         else:
             form = ReviewForm()
+        return render(request, 'products/recensioni.html', {'form': form})
 
-        context = {
-            'form': form
-        }
 
-        return render(request, 'products/recensioni.html', context)
+
+
+@owner_required()
+def ReportView(request):
+    if request.method == "POST":
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.author = request.user
+            report.save()
+            msg = '''Hello, new deli customer service autore: '''
+            send_mail("Hello", "prova", "salvatorebiancofanta@gmail.com", ["salvatorebianco15@gmail.com", ],fail_silently=False)
+            return redirect('homepage')
+    else:
+        form = ReportForm()
+    return render(request, 'products/report_newcat.html', {'form': form})
+
+
 
 class SearchView(ListView):
     model = Prodotti
@@ -134,17 +160,51 @@ class SearchView(ListView):
         })
         return context
 
+@method_decorator([login_required,owner_required],name='dispatch')
+class ListaProdFornitore(ListView):
+    model = Prodotti
+    form_class = Lista_fornitoreForm
+    template_name = "products/prodotti_fornitore.html"
+    context_object_name = 'prodotti_fornitore'
 
-# def searchBar(request):
-#     if request.method == 'GET':
-#
-#         query = request.GET.get('query')
-#
-#         if query:
-#             products = Prodotti.objects.filter(name__icontains=query)
-#             return render(request, 'products/search2.html', {'products':products})
-#
-#         else:
-#             print("No information to show")
-#             return render(request, 'products/search2.html', {})
-#
+    def get_queryset(self):
+        nome = self.request.GET.get('nome')
+        user = self.request.user.username
+        categoria = self.request.GET.get('categoria')
+        if nome :
+            qs = self.model.objects.filter(owner__user__username=user,name__icontains=nome)
+        else:
+            qs = self.model.objects.filter(owner__user__username=user)
+        return qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ListaProdFornitore, self).get_context_data(**kwargs)
+        context['form'] = Lista_fornitoreForm(initial={
+            'nome': self.request.GET.get('nome'),
+
+        })
+        return context
+
+@method_decorator([login_required,client_required],name='dispatch')
+class ListaRevCliente(ListView):
+    model = Review
+    form_class = Lista_RevForm
+    template_name = "products/lista_review.html"
+    context_object_name = 'lista_rev'
+
+    def get_queryset(self):
+        nome = self.request.GET.get('nome')
+        user = self.request.user.username
+
+        if nome:
+            qs = self.model.objects.filter(user__user__username=user,prodotto__name=nome )
+        else:
+            qs = self.model.objects.filter(user__user__username=user)
+        return qs
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ListaRevCliente, self).get_context_data(**kwargs)
+        context['form'] = Lista_RevForm(initial={
+            'nome': self.request.GET.get('nome'),
+
+        })
+        return context

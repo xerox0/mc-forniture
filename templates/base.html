@@ -23,12 +23,8 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#"> Chi siamo <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{%  url "prod:products-category" %}">Categorie Prodotti</a>
-                </li>
+
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
                         Menù
@@ -36,17 +32,23 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% if user.is_authenticated and user.is_owner %}
                             <a class="dropdown-item" href="{%  url 'prod:products-create' %} ">New products</a>
+                            <a class="dropdown-item" href="{%  url 'prod:report_newcat' %} ">Richiesta nuova categoria</a>
+                            <a class="dropdown-item" href="{%  url 'prod:gestione-prodotti' %} ">Gestione prodotti</a>
                         {% endif %}
-                        <a class="dropdown-item" href="{% url "prod:search" %}">Search</a>
+                        {% if user.is_authenticated and user.is_client %}
+                            <a class="dropdown-item" href="{%  url 'prod:lista-review' %} ">Lista Recensioni</a>
+                        {% endif %}
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                         <a class="nav-link" href="{%  url "prod:products-category" %}">Categorie Prodotti</a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <form action="{% url 'prod:search' %}" method="get" class="d-flex">
-                    <input class="form-control me-2" type="text" name="query" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
+                    <a class="dropdown-item" href="{% url "prod:search" %}">Search</a>
+                </li>
+                <li>
+
+                    <a class="dropdown-item" href="{%  url 'forum:thread-list' %} ">Forum</a>
+
                 </li>
             </ul>
 

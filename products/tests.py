@@ -19,17 +19,6 @@ class ProdottiViewTest(TestCase):
 
        # cls.rew = Review.objects.create(prodotto=cls.prod,comment_name='OTTIMO',comment_body='Davvero speciale',rating_fornitore='5',rating_prodotto='5')
 
-    def test_Review_create(self):
-        Review.objects.create(prodotto=self.prod,comment_name='OTTIMO',comment_body='Grandioso',rating_fornitore='5',rating_prodotto='5')
-        self.client.force_login(user=self.user1)
-        dati = {
-            'comment_name': 'OTTIMO',
-            'coomment_body': 'Grandioso',
-            'rating_fornitore': '5',
-            'rating_prodotto': '5'
-        }
-        response = self.client.post(f'/products/product/{self.prod.pk}/recensioni', data=dati)
-        self.assertEqual(response.status_code, 200)
 
     def test_Product_create(self):
         Prodotti.objects.create(owner=self.fo1,categoria=self.cat2,name='Cartone patatine', dimensione='10x10cm',tipo_materiale='cartone',price='0.50€',image='media/products/36958002/36958002.jpg')
@@ -58,6 +47,12 @@ class ProdottiViewTest(TestCase):
     def test_Search(self):
         response = self.client.get(f'/products/')
         self.assertEqual(response.status_code,200)
+
+    def test_Add_review(self):
+        self.client.force_login(user=self.user1)
+        response = self.client.get(f'/products/product/{self.prod.pk}/recensioni')
+        self.assertEqual(response.status_code,200)
+
 
 class SearchFormTest(TestCase):
     @classmethod

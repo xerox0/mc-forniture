@@ -60,7 +60,7 @@ class OwnerSignUpView(CreateView):
 #
 #     return render(request, 'user_manage/registration/owner_creation.html',
 #                   {'fornitore_form': fornitore_form, 'user_form': user_gen})
-#     # template_name = 'user_manage/registration/owner_creation.html' #creo il template che non sarà diverso dal templateform vecchi
+#     # template_name = 'user_manage/registration/owner_creation.html' #creo il templates che non sarà diverso dal templateform vecchi
 #     # success_url =  reverse_lazy('homepage')
 #
 #

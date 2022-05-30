@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.contrib.auth import views as auth_views
 from ecommerce.views import Maintenance, maintenance, NotFound, Homepage
 from django.conf import settings
@@ -32,5 +32,6 @@ urlpatterns = [
     path('login/',auth_views.LoginView.as_view(),name='login'),
     path('logout/',auth_views.LogoutView.as_view(),name='logout'),
     path('user_manage/', include('user_manage.urls')),
-    path('forum/',include('forum.urls'))
+    path('forum/',include('forum.urls')),
+    path('cart/', include('cart.urls', namespace='cart')),
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

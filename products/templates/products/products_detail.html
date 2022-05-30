@@ -1,6 +1,6 @@
 
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block title %}Dettagli di {{ object.name }}{% endblock %}
 
 {% block content %}
@@ -24,6 +24,11 @@
                         {% endif %}
                         {%  if user.is_authenticated and user.is_client %}
                             <a href="{% url 'prod:products-review' pk=product.pk %}"  class="btn btn-danger m-1"> Recensisci </a>
+                            <form action="{% url "cart:cart_add" product.pk %}" method="post">
+                                {% csrf_token %}
+                                {{ cart_product_form|crispy }}
+                                <input type="submit" class="buy-now btn btn-sm btn-primary" value="Add to cart">
+                            </form>
                         {% endif %}
                     </div>
                 </div>

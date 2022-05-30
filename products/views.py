@@ -9,6 +9,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.contrib import messages
+
+from cart.forms import CartAddProductForm
 from user_manage.decorator import owner_required,client_required
 from user_manage.views import OwnerSignUpView
 # Create your views here.
@@ -44,12 +46,13 @@ class ProdottiList(ListView):
 #     template_name = 'products/products_detail.html'
 def product_related(request, pk):
         product = Prodotti.objects.get(id=pk)
+        cart_product_form = CartAddProductForm()
         related_products = Prodotti.objects.filter(categoria=product.categoria).exclude(id=product.id)
         print(related_products)
         if len(related_products) >= 3:
             related_products = random.sample(related_products, 3)
 
-        return render(request, 'products/products_detail.html',{'product':product,'related':related_products})
+        return render(request, 'products/products_detail.html',{'product':product,'related':related_products, 'cart_product_form': cart_product_form})
 
 @method_decorator([login_required, owner_required], name='dispatch')
 class ProdottiCreate(LoginRequiredMixin,CreateView):
@@ -208,3 +211,9 @@ class ListaRevCliente(ListView):
 
         })
         return context
+
+def product_detail(request, id):
+    product = get_object_or_404(Prodotti, id=id, available=True)
+    cart_product_form = CartAddProductForm()
+    context = {'product': product, 'cart_product_form': cart_product_form}
+    return render(request, 'products/products_detail.html', context)

@@ -34,4 +34,5 @@ urlpatterns = [
     path('user_manage/', include('user_manage.urls')),
     path('forum/',include('forum.urls')),
     path('cart/', include('cart.urls', namespace='cart')),
+    path('order/',include('checkout.urls',namespace='order'))
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

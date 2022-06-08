@@ -54,7 +54,7 @@ class ProdottiViewTest(TestCase):
         self.assertEqual(response.status_code,200)
 
 
-class SearchFormTest(TestCase):
+class FormTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user1 = User.objects.create(username='cliente3', password='prova1234', is_client=True)

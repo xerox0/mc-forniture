@@ -22,12 +22,10 @@ class ForumForm(forms.ModelForm):
 class RispostaForm(forms.ModelForm):
 
     helper = FormHelper() #inizializzo un nuovo attributo che inizializza form helper.
-
     helper.form_method = 'POST' #questo perchè poi oglio evitare di scrivere i form nell'html con {% crispy %}
     helper.add_input(Submit('submit','Submit'))
     helper.inputs[0].field_classes = 'btn btn-success'
 
     class Meta:
         model = Risposta
-
         fields = ['commento']

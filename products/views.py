@@ -9,6 +9,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from django.contrib import messages
+from django.views import View
 
 from cart.forms import CartAddProductForm
 from user_manage.decorator import owner_required,client_required
@@ -72,6 +73,7 @@ class ProdottiDelete(LoginRequiredMixin,DeleteView):
     model= Prodotti
     template_name = 'products/delete.html'
     success_url = reverse_lazy('homepage')
+    success_message = 'Prodotto eliminato correttamente!'
 
 
 @method_decorator([login_required, owner_required], name='dispatch')
@@ -81,6 +83,7 @@ class ProdottiUpdate(LoginRequiredMixin,UpdateView):
     #fields = ['owne','name','description','price']
     success_url = reverse_lazy('prod:products-category')
     form_class = ProdottiForm
+    success_message = 'Prodotto modificato correttamente!'
 
 
 @method_decorator([login_required,client_required],name='dispatch')
@@ -107,23 +110,25 @@ def add_review(request, pk):
             form = ReviewForm()
         return render(request, 'products/recensioni.html', {'form': form})
 
+@method_decorator([login_required, owner_required], name='dispatch')
+class ReportView(CreateView):
+    form_class = ReportForm
+    initial = {'key':'value'}
+    template_name = 'products/report_newcat.html'
 
-
-
-@owner_required()
-def ReportView(request):
-    if request.method == "POST":
-        form = ReportForm(request.POST)
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
         if form.is_valid():
             report = form.save(commit=False)
             report.author = request.user
             report.save()
-            msg = '''Hello, new deli customer service autore: '''
-            send_mail("Hello", "prova", "salvatorebiancofanta@gmail.com", ["salvatorebianco15@gmail.com", ],fail_silently=False)
+            send_mail("Hello", "Prova", "salvatorebiancofanta@gmail.com", ["salvatorebianco15@gmail.com", ],
+                      fail_silently=False)
             return redirect('homepage')
-    else:
-        form = ReportForm()
-    return render(request, 'products/report_newcat.html', {'form': form})
+
+        return render(request, self.template_name, {'form': form})
+
+
 
 
 

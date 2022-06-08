@@ -34,6 +34,7 @@
                             <a class="dropdown-item" href="{%  url 'prod:products-create' %} ">New products</a>
                             <a class="dropdown-item" href="{%  url 'prod:report_newcat' %} ">Richiesta nuova categoria</a>
                             <a class="dropdown-item" href="{%  url 'prod:gestione-prodotti' %} ">Gestione prodotti</a>
+                            <a class="dropdown-item" href="{%  url 'order:order-list' %} ">Ordini</a>
                         {% endif %}
                         {% if user.is_authenticated and user.is_client %}
                             <a class="dropdown-item" href="{%  url 'prod:lista-review' %} ">Lista Recensioni</a>
@@ -50,6 +51,7 @@
                     <a class="dropdown-item" href="{%  url 'forum:thread-list' %} ">Forum</a>
 
                 </li>
+
             </ul>
 
             {% if user.is_authenticated %}

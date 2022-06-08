@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 # Create your views here.
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, ListView, DetailView
+from django.views import View
+from django.views.generic import CreateView, ListView, DetailView, TemplateView
 
 from forum.forms import ForumForm, RispostaForm
 from forum.models import Forum, Risposta
@@ -33,26 +34,53 @@ class ThreadCreate(LoginRequiredMixin,CreateView):
     form_class = ForumForm
     template_name = 'forum/crea_thread.html'
     success_url = reverse_lazy('forum:thread-list')
+
     def form_valid(self, form):
         form.instance.user = Cliente.objects.get(user__username=self.request.user.username)
         return super(ThreadCreate,self).form_valid(form)
 
-@login_required()
-def add_comment(request, pk):
-    if request.user.is_client ==True:
-                user = Cliente.objects.get(user__username=request.user.username)
-    elif request.user.is_owner ==True:
-                user= Owner.objects.get(user__username=request.user.username)
-    object =Forum.objects.get(id=pk)
-    if request.method == "POST":
-        form = RispostaForm(request.POST)
+
+
+@method_decorator([login_required],name='dispatch')
+class AddComment(CreateView):
+    form_class= RispostaForm
+    initial = {'key':'value'}
+    template_name = 'forum/crea_risposta.html'
+
+    def post(self, request,pk,*args, **kwargs):
+        if request.user.is_client == True:
+            user = Cliente.objects.get(user__username=request.user.username)
+        elif request.user.is_owner == True:
+            user = Owner.objects.get(user__username=request.user.username)
+        object = Forum.objects.get(id=pk)
+        form = self.form_class(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.user = user
             comment.titolo = object
             comment.save()
             return redirect('forum:discussione', pk=object.pk)
-    else:
-        form = RispostaForm()
-    return render(request, 'forum/crea_risposta.html', {'form': form})
 
+        return render(request, self.template_name, {'form': form})
+
+
+
+# @login_required()
+# def add_comment(request, pk):
+#     if request.user.is_client ==True:
+#                 user = Cliente.objects.get(user__username=request.user.username)
+#     elif request.user.is_owner ==True:
+#                 user= Owner.objects.get(user__username=request.user.username)
+#     object =Forum.objects.get(id=pk)
+#     if request.method == "POST":
+#         form = RispostaForm(request.POST)
+#         if form.is_valid():
+#             comment = form.save(commit=False)
+#             comment.user = user
+#             comment.titolo = object
+#             comment.save()
+#             return redirect('forum:discussione', pk=object.pk)
+#     else:
+#         form = RispostaForm()
+#     return render(request, 'forum/crea_risposta.html', {'form': form})
+#

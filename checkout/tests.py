@@ -23,7 +23,7 @@ class CheckoutFormTest(TestCase):
             cls.prod = Prodotti.objects.create(owner=cls.fo1, categoria=cls.cat, name='Sacchetto Naturale',
                                                dimensione='30x10cm', tipo_materiale='plastica', price='0.70€',
                                                image='media/products/36958002/36958002.jpg')
-            cls.ord = Order.objects.create()
+
     def test_ProductForm_invalid(self):
         self.client.force_login(user=self.user1)
         dati= {

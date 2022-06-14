@@ -23,9 +23,6 @@ from django.contrib import admin
 
 urlpatterns = [
     path('', Homepage.as_view(), name='homepage'),
-    path('Maintenance', Maintenance.as_view(), name = 'Maintenance'),
-    path('maintenance/<int:cheneso>',maintenance,name='maintenance'),
-    path('404-not-found', NotFound.as_view(), name='404-not-found'),
     path('admin/', admin.site.urls),
     path('products/', include('products.urls')),
     path('account/', include('django.contrib.auth.urls')),

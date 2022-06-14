@@ -29,7 +29,7 @@ class RispostaList(DetailView):
 
 
 @method_decorator([login_required,client_required],name='dispatch')
-class ThreadCreate(LoginRequiredMixin,CreateView):
+class ThreadCreate(CreateView):
     model = Forum
     form_class = ForumForm
     template_name = 'forum/crea_thread.html'

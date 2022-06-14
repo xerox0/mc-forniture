@@ -56,7 +56,7 @@ def product_related(request, pk):
         return render(request, 'products/products_detail.html',{'product':product,'related':related_products, 'cart_product_form': cart_product_form})
 
 @method_decorator([login_required, owner_required], name='dispatch')
-class ProdottiCreate(LoginRequiredMixin,CreateView):
+class ProdottiCreate(CreateView):
     model = Prodotti
     template_name = 'products/create.html'
     #fields = ['owne','name', 'description', 'price']
@@ -69,7 +69,7 @@ class ProdottiCreate(LoginRequiredMixin,CreateView):
         return super(ProdottiCreate,self).form_valid(form)
 
 @method_decorator([login_required, owner_required], name='dispatch')
-class ProdottiDelete(LoginRequiredMixin,DeleteView):
+class ProdottiDelete(DeleteView):
     model= Prodotti
     template_name = 'products/delete.html'
     success_url = reverse_lazy('homepage')
@@ -77,7 +77,7 @@ class ProdottiDelete(LoginRequiredMixin,DeleteView):
 
 
 @method_decorator([login_required, owner_required], name='dispatch')
-class ProdottiUpdate(LoginRequiredMixin,UpdateView):
+class ProdottiUpdate(UpdateView):
     model = Prodotti
     template_name = 'products/update.html'
     #fields = ['owne','name','description','price']
@@ -87,7 +87,7 @@ class ProdottiUpdate(LoginRequiredMixin,UpdateView):
 
 
 @method_decorator([login_required,client_required],name='dispatch')
-class RevDelete(LoginRequiredMixin,DeleteView):
+class RevDelete(DeleteView):
     model= Review
     template_name = 'products/delete_review.html'
     success_url = reverse_lazy('homepage')

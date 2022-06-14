@@ -41,7 +41,7 @@ class Prodotti(models.Model):
     dimensione = models.CharField(max_length=255, default=None)
     tipo_materiale = models.CharField(max_length=255,default=None)
     price = models.CharField(max_length=255)
-    review = models.TextField(default='Hello')
+
     image = models.ImageField(upload_to=upload_image_path, null=True, blank=True)
 
     #c'è la possibilità di andare a sovrascrivere alcune funzioni in base.py
